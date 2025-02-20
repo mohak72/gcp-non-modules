@@ -1,7 +1,6 @@
-# GKE Cluster Configuration
-resource "google_container_cluster" "gkefit_r_central1" {
-  name     = "gkefit-r-usc1"
-  location = "us-central1"
+resource "google_container_cluster" "gke" {
+  name     = var.cluster_name
+  location = var.region
   project  = var.project_id
 
   network    = var.network
@@ -15,17 +14,17 @@ resource "google_container_cluster" "gkefit_r_central1" {
 
   master_authorized_networks_config {
     cidr_blocks {
-      cidr_block   = "10.8.0.0/8"
+      cidr_block   = var.master_ipv4_cidr
       display_name = "AuthorizedNetworkTest"
     }
   }
 
   release_channel {
-    channel = "STABLE"
+    channel = var.release_channel
   }
 }
 
-# ✅ Mount Block Storage to GKE Cluster (Like in Screenshot)
+# ✅ Mount Block Storage to GKE
 resource "kubernetes_persistent_volume" "gke_pv" {
   metadata {
     name = google_compute_disk.gke_persistent_disk.name
@@ -48,12 +47,12 @@ resource "kubernetes_persistent_volume" "gke_pv" {
 
 resource "kubernetes_persistent_volume_claim" "gke_pvc" {
   metadata {
-    name = "gke-pvc"
+    name = var.pvc_name
   }
 
   spec {
     access_modes       = ["ReadWriteOnce"]
-    storage_class_name = "standard"
+    storage_class_name = var.pvc_storage_class
 
     resources {
       requests = {
