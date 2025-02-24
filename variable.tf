@@ -28,3 +28,17 @@ variable "enable_message_ordering" {}
 variable "message_retention_duration" {}
 
 variable "static_ip_name" {}
+variable "namespace" {
+  description = "Namespace for role-based access control"
+  type        = string
+}
+
+variable "gcp_user_email" {
+  description = "GCP IAM user email to bind with Kubernetes Role"
+  type        = string
+}
+
+variable "gcp_group_email" {
+  description = "GCP IAM group email to bind with Kubernetes ClusterRole"
+  type        = string
+}
